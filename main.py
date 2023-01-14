@@ -15,6 +15,7 @@ from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 from sklearn.linear_model import LinearRegression
+
 # Load dataset
 url = "https://raw.githubusercontent.com/jbrownlee/Datasets/master/iris.csv"
 names = ['sepal-length', 'sepal-width', 'petal-length', 'petal-width', 'class']
@@ -30,11 +31,10 @@ dataset = read_csv(url, names=names)
 # scatter_matrix(dataset)
 # pyplot.show()
 
-dataset['class'] = dataset['class'].astype('category')
 array = dataset.values
 x = array[:, 0:4]
 y = array[:, 4]
-x_train, x_test, y_train, y_test = train_test_split(x, y, test_size = 0.20, random_state=1)
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.20, random_state=1)
 
 # Spot Check Algorithms
 models = []
@@ -53,3 +53,19 @@ for name, model in models:
     results.append(cv_results)
     names.append(name)
     print('%s: %f (%f)' % (name, cv_results.mean(), cv_results.std()))
+
+# Compare Algorithms
+# pyplot.boxplot(results, labels=names)
+# pyplot.title('Algorithm Comparison')
+# pyplot.show()
+
+# Make predictions on validation dataset
+model = SVC(gamma='auto')
+model.fit(x_train, y_train)
+predictions = model.predict(x_test)
+
+# Evaluate predictions
+print(accuracy_score(y_test, predictions))
+print(confusion_matrix(y_test, predictions))
+print(classification_report(y_test, predictions))
+
